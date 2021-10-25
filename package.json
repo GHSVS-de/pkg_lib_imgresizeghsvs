@@ -1,9 +1,33 @@
 {
 	"name": "lib_imgresizeghsvs",
-	"nameReal": "imgresizeghsvs",
+	"nameReal": "pkg_imgresizeghsvs",
 	"filename": "imgresizeghsvs",
-	"version": "2021.07.12",
-	"minimumPhp": "7.3.0",
+	"version": "2021.10.25",
+	"versionCompare": "2021.07.12",
+	"update": {
+		"type": "package",
+		"folder": "",
+		"client": "site",
+		"tag": "stable",
+		"targetplatform": ".*"
+	},
+	"releaseTxt": {
+		"title": "Joomla package with intervention/image library."
+	},
+	"changelog": {
+		"projecturl": "https://github.com/GHSVS-de/pkg_lib_imgresizeghsvs",
+		"infosDE": "",
+		"infosEN": "https://github.com/GHSVS-de/pkg_lib_imgresizeghsvs#readme",
+		"docsDE": "",
+		"docsEN": "",
+		"lastTests": [
+			"This package comes with intervention/image 2.7.0",
+			"PHP 8",
+			"Joomla 3.10",
+			"Joomla 4.0"
+		]
+	},
+	"minimumPhp": "7.4.0",
 	"maximumPhp": "8.99999.99999",
 	"minimumJoomla": "3.9.8",
 	"maximumJoomla": "",
@@ -14,20 +38,22 @@
 	"author": {
 		"name": "G@HService Berlin Neukölln, Volkmar Volli Schlothauer",
 		"email": "",
-		"url": "https://www.ghsvs.de"
+		"url": "https://ghsvs.de"
 	},
 	"contributors": [
 		{
 			"name": "G@HService Berlin Neukölln, Volkmar Volli Schlothauer",
 			"email": "",
-			"url": "https://www.ghsvs.de"
+			"url": "https://ghsvs.de"
 		}
 	],
 	"bugs": "https://github.com/GHSVS-de/pkg_lib_imgresizeghsvs/issues",
 	"homepage": "https://github.com/GHSVS-de/pkg_lib_imgresizeghsvs#readme",
 	"keywords": [
 		"joomla",
-		"system plugin"
+		"intervention/image",
+		"library",
+		"PHP Image Manipulation"
 	],
 	"private": false,
 	"description": "Joomla package/library. Installs library intervention/image for image manipulation.",
@@ -42,11 +68,11 @@
 		"g-ncu-override-json": "ncu -u"
 	},
 	"devDependencies": {
-		"adm-zip": "0.5.5",
-		"chalk": "^4.1.1",
-		"commander": "^8.0.0",
+		"adm-zip": "0.5.9",
+		"chalk": "^4.1.2",
+		"commander": "^8.3.0",
 		"fs-extra": "10.0.0",
-		"npm-check-updates": "^11.8.2",
+		"npm-check-updates": "^11.8.5",
 		"path": "^0.12.7",
 		"recursive-readdir": "^2.2.2",
 		"rimraf": "3.0.2"
