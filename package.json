@@ -63,10 +63,12 @@
 		"url": "https://github.com/GHSVS-de/lib_imgresizeghsvs.git"
 	},
 	"scripts": {
-		"g-build": "node build.js",
-		"g-npm-update-check": "ncu",
-		"g-ncu-override-json": "ncu -u"
+		"build": "node build.js",
+		"updateCheck": "npm outdated",
+		"update": "npm update --save-dev"
 	},
+	"dependencies": {},
 	"devDependencies": {},
+	"peerDependencies": {},
 	"browserslist": []
 }

@@ -22,17 +22,13 @@ use Intervention\Image\ImageManager;
 - Stupid, but no further problem.
 - To uninstall the library uninstall the package.
 
-# Changelog
-- https://updates.ghsvs.de/changelog.php?file=lib_imgresizeghsvs
-
 # My personal build procedure
 - Prepare/adapt `./package.json`.
-
 - `cd /mnt/z/git-kram/pkg_lib_imgresizeghsvs/`
 
 ## node/npm updates/installation
-- `npm run g-npm-update-check` or (faster) `ncu`
-- `npm run g-ncu-override-json` (if needed) or (faster) `ncu -u`
+- `npm run updateCheck` or (faster) `npm outdated`
+- `npm run update` (if needed) or (faster) `npm update --save-dev`
 - `npm install` (if needed)
 
 ## composer

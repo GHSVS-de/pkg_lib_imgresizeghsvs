@@ -1,8 +1,23 @@
-const fse = require('fs-extra');
-const chalk = require('chalk');
+#!/usr/bin/env node
 const path = require('path');
-const replaceXml = require('./build/replaceXml.js');
-const helper = require('./build/helper.js');
+
+/* Configure START */
+const pathBuildKram = path.resolve("../buildKramGhsvs");
+const updateXml = `${pathBuildKram}/build/update.xml`;
+const changelogXml = `${pathBuildKram}/build/changelog.xml`;
+const releaseTxt = `${pathBuildKram}/build/release.txt`;
+/* Configure END */
+
+const replaceXml = require(`${pathBuildKram}/build/replaceXml.js`);
+const helper = require(`${pathBuildKram}/build/helper.js`);
+
+const pc = require(`${pathBuildKram}/node_modules/picocolors`);
+const fse = require(`${pathBuildKram}/node_modules/fs-extra`);
+
+let replaceXmlOptions = {};
+let zipOptions = {};
+let from = "";
+let to = "";
 
 let thisPackages = [];
 
