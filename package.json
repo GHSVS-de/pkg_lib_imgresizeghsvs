@@ -2,8 +2,8 @@
 	"name": "pkg_imgresizeghsvs",
 	"nameReal": "pkg_lib_imgresizeghsvs",
 	"filename": "imgresizeghsvs",
-	"version": "2022.06.25",
-	"versionCompare": "2021.10.25",
+	"version": "2022.06.26-dev",
+	"versionCompare": "2022.06.25",
 	"update": {
 		"type": "package",
 		"folder": "",
@@ -67,7 +67,7 @@
 		"PHP Image Manipulation"
 	],
 	"private": false,
-	"description": "Joomla package/library. Installs PHP library intervention/image for image manipulation.",
+	"description": "Joomla package/library. Installs PHP library intervention/image for image manipulation. Not more.",
 	"license": "GPL-3.0",
 	"repository": {
 		"type": "git",
