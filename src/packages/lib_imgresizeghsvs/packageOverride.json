@@ -1,0 +1,7 @@
+{
+	"name": "lib_imgresizeghsvs",
+	"update": {
+		"type": "library"
+	},
+	"description": "Joomla library. Part of Joomla package \"pkg_imgresizeghsvs\". Contains PHP library intervention/image for image manipulation."
+}

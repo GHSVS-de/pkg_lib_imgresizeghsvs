@@ -19,19 +19,28 @@ let zipOptions = {};
 let from = "";
 let to = "";
 
-let thisPackages = [];
-
 const {
 	filename,
 	name,
+	nameReal,
 	version,
 } = require("./package.json");
 
 const vendorPath = `./_composer/vendor`;
 const packagesDir = `./package/packages`;
 const libDir = `${packagesDir}/lib_imgresizeghsvs`;
-const manifestFileName = `pkg_${filename}.xml`;
-const Manifest = `${__dirname}/package/${manifestFileName}`;
+
+// By package abweichend. Nicht filename.
+const manifestFileName = `${name}.xml`;
+const Manifest = path.resolve(`./package/${manifestFileName}`);
+const jsonMain = './package.json';
+
+const manifestFileNameChild = `${filename}.xml`;
+const manifestChild = `${libDir}/${manifestFileNameChild}`;
+const jsonChild = `${libDir}/packageOverride.json`;
+
+let versionSub = '';
+let thisPackages = [];
 
 (async function exec()
 {
@@ -39,130 +48,150 @@ const Manifest = `${__dirname}/package/${manifestFileName}`;
 		`./package`,
 		`./dist`,
 	];
-
 	await helper.cleanOut(cleanOuts);
 
-	versionSub = await helper.findVersionSub (
-		path.join(__dirname, vendorPath, `composer/installed.json`),
-			'intervention/image');
-	console.log(chalk.magentaBright(`versionSub identified as: "${versionSub}"`));
+	from = path.join(__dirname, vendorPath, `composer/installed.json`)
+	versionSub = await helper.findVersionSub (from, 'intervention/image');
+	console.log(pc.magenta(pc.bold(`versionSub identified as: "${versionSub}"`)));
 
-	await console.log(chalk.redBright(`Be patient! Copy actions!`));
-
-	await fse.copy(`./src`, `./package`
+	from = `./src`;
+	to = `./package`;
+	await fse.copy(from, to
 	).then(
-		answer => console.log(chalk.yellowBright(`Copied "./src" to "./package".`))
+		answer => console.log(
+			pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
+		)
 	);
 
-	// Copy vendor to lib_folder.
-	await console.log(chalk.redBright(`Be patient! Composer copy actions!`));
-	await fse.copy(`${vendorPath}`, `${libDir}/vendor`
+	from = vendorPath;
+	to = `${libDir}/vendor`;
+	await fse.copy(from, to
 	).then(
-		answer => console.log(chalk.yellowBright(
-			`Copied "_composer/vendor" to "${libDir}/vendor".`))
+		answer => console.log(
+			pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
+		)
 	);
 
 	if (!(await fse.exists(`./dist`)))
 	{
-    	await fse.mkdir(`./dist`
-		).then(
-			answer => console.log(chalk.yellowBright(`Created "./dist".`))
+		to = './dist';
+		await fse.mkdir(to).then(
+			answer => console.log(pc.yellow(pc.bold(`Created "${to}".`)))
 		);
-  }
+	}
 
-	// ##### Zip the Library (child). START.
+	// ##### The Library (child). START.
+	let zipFilename = `lib_${filename}-${version}_${versionSub}.zip`;
+
 	// package/packages/lib_imgresizeghsvs/imgresizeghsvs.xml
-	let zipFilename = `${name}-${version}_${versionSub}.zip`;
-	let zipFile = `${path.join(__dirname, packagesDir, zipFilename)}`;
-	let folderToZip = libDir;
+	let jsonString = await helper.mergeJson(
+		[path.resolve(jsonMain), path.resolve(jsonChild)]
+	)
 
-	let xmlFileName = `${filename}.xml`;
-	let xmlFile = `${path.join(__dirname, libDir, xmlFileName)}`;
+	replaceXmlOptions = {
+		"xmlFile": path.resolve(manifestChild),
+		"zipFilename": zipFilename,
+		"checksum": "",
+		"dirname": __dirname,
+		"thisPackages": thisPackages,
+		"jsonString": jsonString
+	};
 
-	await replaceXml.main(xmlFile);
-
-	await fse.copy(xmlFile, `./dist/${xmlFileName}`).then(
-		answer => console.log(chalk.yellowBright(
-			`Copied "${xmlFileName}" to "./dist".`))
+	await replaceXml.main(replaceXmlOptions);
+	from = manifestChild;
+	to = `./dist/${manifestFileNameChild}`
+	await fse.copy(from, to
+	).then(
+		answer => console.log(
+			pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
+		)
 	);
 
-	let zip = new (require("adm-zip"))();
-	zip.addLocalFolder(folderToZip, false);
-	await zip.writeZip(zipFile);
-	console.log(chalk.cyanBright(chalk.bgRed(`"${zipFile}" written.`)));
+	// ## Create child zip file.
+	let zipFilePath = path.resolve(`./${packagesDir}/${zipFilename}`);
 
-	await helper.cleanOut([libDir]);
+	zipOptions = {
+		"source": path.resolve(libDir),
+		"target": zipFilePath
+	};
+	await helper.zip(zipOptions);
 
 	thisPackages.push(
 		`<file type="library" id="imgresizeghsvs">${zipFilename}</file>`
 	);
-	// ##### Zip the Library (child). END.
+	await helper.cleanOut([libDir]);
+	// ##### The Library (child). END.
 
-	// ##### Zip the Package (main). START.
+	// ##### The Package (main). START.
+	zipFilename = `${nameReal}-${version}_${versionSub}.zip`;
+
 	// package/pkg_structuredataghsvs.xml
-	zipFilename = `pkg_${zipFilename}`;
-	zipFile = `${path.join(__dirname, `dist`, zipFilename)}`;
-	folderToZip = `./package`;
+	replaceXmlOptions.xmlFile = Manifest;
+	replaceXmlOptions.zipFilename = zipFilename;
+	replaceXmlOptions.thisPackages = thisPackages;
+	replaceXmlOptions.jsonString = "";
 
-	xmlFileName = manifestFileName;
-	xmlFile = Manifest;
-
-	await replaceXml.main(xmlFile, null, null, thisPackages);
-
-	await fse.copy(xmlFile, `./dist/${xmlFileName}`).then(
-		answer => console.log(chalk.yellowBright(
-			`Copied "${xmlFileName}" to "./dist".`))
+	await replaceXml.main(replaceXmlOptions);
+	from = Manifest;
+	to = `./dist/${manifestFileName}`
+	await fse.copy(from, to
+	).then(
+		answer => console.log(
+			pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
+		)
 	);
 
-	zip = new (require("adm-zip"))();
-	zip.addLocalFolder(folderToZip, false);
-	await zip.writeZip(zipFile);
-	console.log(chalk.cyanBright(chalk.bgRed(`"${zipFile}" written.`)));
-	// ##### Zip the Package (main). END.
+	// ## Create main zip file.
+	zipFilePath = path.resolve(`./dist/${zipFilename}`);
+
+	zipOptions = {
+		"source": path.resolve("package"),
+		"target": zipFilePath
+	};
+	await helper.zip(zipOptions)
 
 	const Digest = 'sha256'; //sha384, sha512
-	const checksum = await helper.getChecksum(zipFile, Digest)
+	const checksum = await helper.getChecksum(zipFilePath, Digest)
   .then(
 		hash => {
 			const tag = `<${Digest}>${hash}</${Digest}>`;
-			console.log(chalk.greenBright(`Checksum tag is: ${tag}`));
+			console.log(pc.green(pc.bold(`Checksum tag is: ${tag}`)));
 			return tag;
 		}
 	)
 	.catch(error => {
 		console.log(error);
-		console.log(chalk.redBright(`Error while checksum creation. I won't set one!`));
+		console.log(pc.red(pc.bold(
+			`Error while checksum creation. I won't set one!`)));
 		return '';
 	});
 
-	xmlFile = 'update.xml';
-	await fse.copy(`./${xmlFile}`, `./dist/${xmlFile}`).then(
-		answer => console.log(chalk.yellowBright(
-			`Copied "${xmlFile}" to ./dist.`))
-	);
-	await replaceXml.main(`${__dirname}/dist/${xmlFile}`, zipFilename, checksum);
+	replaceXmlOptions.checksum = checksum;
 
-	xmlFile = 'changelog.xml';
-	await fse.copy(`./${xmlFile}`, `./dist/${xmlFile}`).then(
-		answer => console.log(chalk.yellowBright(
-			`Copied "${xmlFile}" to ./dist.`))
-	);
-	await replaceXml.main(`${__dirname}/dist/${xmlFile}`, zipFilename, checksum);
+	// Bei diesen werden zuerst Vorlagen nach dist/ kopiert und dort erst "replaced".
+	for (const file of [updateXml, changelogXml, releaseTxt])
+	{
+		from = file;
+		to = `./dist/${path.win32.basename(file)}`;
+		await fse.copy(from, to
+		).then(
+			answer => console.log(
+				pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
+			)
+		);
 
-	xmlFile = 'release.txt';
-	await fse.copy(`./${xmlFile}`, `./dist/${xmlFile}`).then(
-		answer => console.log(chalk.yellowBright(
-			`Copied "${xmlFile}" to ./dist.`))
-	);
-	await replaceXml.main(`${__dirname}/dist/${xmlFile}`, zipFilename, checksum,
-		thisPackages);
+		replaceXmlOptions.xmlFile = path.resolve(to);
+
+		await replaceXml.main(replaceXmlOptions);
+	}
 
 	cleanOuts = [
 		`./package`,
 	];
 
 	await helper.cleanOut(cleanOuts).then(
-		answer => console.log(chalk.cyanBright(chalk.bgRed(
-			`Finished. Good bye!`)))
+		answer => console.log(
+			pc.cyan(pc.bold(pc.bgRed(`Finished. Good bye!`)))
+		)
 	);
 })();
