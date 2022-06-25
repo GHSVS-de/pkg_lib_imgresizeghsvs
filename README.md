@@ -1,5 +1,3 @@
-# Work in progress
-
 # pkg_lib_imgresizeghsvs
 - Joomla package that installs the image manipulation library [intervention/image](https://github.com/intervention/image) in Joomla folder `/libraries/imgresizeghsvs/`. Not more, not less.
 - I load/initialise it in extensions, respectively helpers, like this:
