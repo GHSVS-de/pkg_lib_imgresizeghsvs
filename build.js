@@ -72,21 +72,23 @@ let thisPackages = [];
 		)
 	);
 
-	if (!(await fse.exists(`./dist`)))
+	to = './dist';
+
+	if (!(await fse.exists(to)))
 	{
-		to = './dist';
 		await fse.mkdir(to).then(
 			answer => console.log(pc.yellow(pc.bold(`Created "${to}".`)))
 		);
 	}
 
 	// ##### The Library (child). START.
-	let zipFilename = `lib_${filename}-${version}_${versionSub}.zip`;
 
 	// package/packages/lib_imgresizeghsvs/imgresizeghsvs.xml
 	let jsonString = await helper.mergeJson(
 		[path.resolve(jsonMain), path.resolve(jsonChild)]
 	)
+
+	let zipFilename = `${JSON.parse(jsonString).name}-${version}_${versionSub}.zip`;
 
 	replaceXmlOptions = {
 		"xmlFile": path.resolve(manifestChild),
