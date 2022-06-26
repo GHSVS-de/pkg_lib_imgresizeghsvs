@@ -1,5 +1,5 @@
 # pkg_lib_imgresizeghsvs
-- Joomla package that installs the image manipulation library [intervention/image](https://github.com/intervention/image) in Joomla folder `/libraries/imgresizeghsvs/`. Not more, not less.
+- Joomla package that installs the image manipulation PHP library [intervention/image](https://github.com/intervention/image) in Joomla folder `/libraries/imgresizeghsvs/`. Not more, not less.
 - I load/initialise it in extensions, respectively helpers, like this:
 
 ```
@@ -36,11 +36,11 @@ use Intervention\Image\ImageManager;
 - `npm run update` (if needed) or (faster) `npm update --save-dev`
 
 ## Check package.json overrides
-Extensions in src/packages/**/ may have a file packageOverride.json that can be merged into the main package.json.
+Extensions in src/packages/**/ may have a file `packageOverride.json` that can be merged into the main `package.json` during build.
 
-Thus you can override some parameters for replaceXml.js of repo buildKramGhsvs.
+Thus you can override some parameters for `replaceXml.js` of repo `buildKramGhsvs`.
 
-Not documented. Therfore see ./build.js (helper.mergeJson, replaceXmlOptions.jsonString).
+Not documented. Therfore see `./build.js` (`helper.mergeJson`, `replaceXmlOptions.jsonString`).
 
 ## composer
 - The composer.json is located in folder `./_composer`
