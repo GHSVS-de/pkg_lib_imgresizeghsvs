@@ -56,21 +56,11 @@ let thisPackages = [];
 
 	from = `./src`;
 	to = `./package`;
-	await fse.copy(from, to
-	).then(
-		answer => console.log(
-			pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
-		)
-	);
+	await helper.copy(from, to)
 
 	from = vendorPath;
 	to = `${libDir}/vendor`;
-	await fse.copy(from, to
-	).then(
-		answer => console.log(
-			pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
-		)
-	);
+	await helper.copy(from, to)
 
 	to = './dist';
 
@@ -102,12 +92,7 @@ let thisPackages = [];
 	await replaceXml.main(replaceXmlOptions);
 	from = manifestChild;
 	to = `./dist/${manifestFileNameChild}`
-	await fse.copy(from, to
-	).then(
-		answer => console.log(
-			pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
-		)
-	);
+	await helper.copy(from, to)
 
 	// ## Create child zip file.
 	let zipFilePath = path.resolve(`./${packagesDir}/${zipFilename}`);
@@ -127,7 +112,7 @@ let thisPackages = [];
 	// ##### The Package (main). START.
 	zipFilename = `${nameReal}-${version}_${versionSub}.zip`;
 
-	// package/pkg_structuredataghsvs.xml
+	// package/pkg_imgresizeghsvs.xml
 	replaceXmlOptions.xmlFile = Manifest;
 	replaceXmlOptions.zipFilename = zipFilename;
 	replaceXmlOptions.thisPackages = thisPackages;
@@ -136,12 +121,7 @@ let thisPackages = [];
 	await replaceXml.main(replaceXmlOptions);
 	from = Manifest;
 	to = `./dist/${manifestFileName}`
-	await fse.copy(from, to
-	).then(
-		answer => console.log(
-			pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
-		)
-	);
+	await helper.copy(from, to)
 
 	// ## Create main zip file.
 	zipFilePath = path.resolve(`./dist/${zipFilename}`);
@@ -175,12 +155,7 @@ let thisPackages = [];
 	{
 		from = file;
 		to = `./dist/${path.win32.basename(file)}`;
-		await fse.copy(from, to
-		).then(
-			answer => console.log(
-				pc.yellow(pc.bold(`Copied "${from}" to "${to}".`))
-			)
-		);
+		await helper.copy(from, to)
 
 		replaceXmlOptions.xmlFile = path.resolve(to);
 
