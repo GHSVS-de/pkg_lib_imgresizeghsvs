@@ -21,7 +21,7 @@
 		"updateFilePrefix": "lib_imgresizeghsvs"
 	},
 	"releaseTxt": {
-		"title": "Joomla package with intervention/image library.",
+		"title": "Joomla package with intervention/image PHP library.",
 		"requires": [],
 		"uses": ["https://github.com/intervention/image"],
 		"language": []
