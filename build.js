@@ -28,7 +28,7 @@ const {
 
 const vendorPath = `./_composer/vendor`;
 const packagesDir = `./package/packages`;
-const libDir = `${packagesDir}/lib_imgresizeghsvs`;
+const childDir = `${packagesDir}/lib_imgresizeghsvs`;
 
 // By package abweichend. Nicht filename.
 const manifestFileName = `${name}.xml`;
@@ -36,8 +36,8 @@ const Manifest = path.resolve(`./package/${manifestFileName}`);
 const jsonMain = './package.json';
 
 const manifestFileNameChild = `${filename}.xml`;
-const manifestChild = `${libDir}/${manifestFileNameChild}`;
-const jsonChild = `${libDir}/packageOverride.json`;
+const manifestChild = `${childDir}/${manifestFileNameChild}`;
+const jsonChild = `${childDir}/packageOverride.json`;
 
 let versionSub = '';
 let thisPackages = [];
@@ -59,17 +59,10 @@ let thisPackages = [];
 	await helper.copy(from, to)
 
 	from = vendorPath;
-	to = `${libDir}/vendor`;
+	to = `${childDir}/vendor`;
 	await helper.copy(from, to)
 
-	to = './dist';
-
-	if (!(await fse.exists(to)))
-	{
-		await fse.mkdir(to).then(
-			answer => console.log(pc.yellow(pc.bold(`Created "${to}".`)))
-		);
-	}
+	await helper.mkdir('./dist');
 
 	// ##### The Library (child). START.
 
@@ -98,21 +91,22 @@ let thisPackages = [];
 	let zipFilePath = path.resolve(`./${packagesDir}/${zipFilename}`);
 
 	zipOptions = {
-		"source": path.resolve(libDir),
+		"source": path.resolve(childDir),
 		"target": zipFilePath
 	};
 	await helper.zip(zipOptions);
 
+	// The id element in <file ..> tag is not arbitrary! The id= should be set to the value of the element column in the #__extensions table. If they are not set correctly, upon uninstallation of the package, the child file will not be found and uninstalled.
 	thisPackages.push(
 		`<file type="library" id="imgresizeghsvs">${zipFilename}</file>`
 	);
-	await helper.cleanOut([libDir]);
+	await helper.cleanOut([childDir]);
 	// ##### The Library (child). END.
 
 	// ##### The Package (main). START.
 	zipFilename = `${nameReal}-${version}_${versionSub}.zip`;
 
-	// package/pkg_imgresizeghsvs.xml
+	// package/pkg_xyz.xml
 	replaceXmlOptions.xmlFile = Manifest;
 	replaceXmlOptions.zipFilename = zipFilename;
 	replaceXmlOptions.thisPackages = thisPackages;
