@@ -12,7 +12,7 @@ const replaceXml = require(`${pathBuildKram}/build/replaceXml.js`);
 const helper = require(`${pathBuildKram}/build/helper.js`);
 
 const pc = require(`${pathBuildKram}/node_modules/picocolors`);
-const fse = require(`${pathBuildKram}/node_modules/fs-extra`);
+//const fse = require(`${pathBuildKram}/node_modules/fs-extra`);
 
 let replaceXmlOptions = {};
 let zipOptions = {};
@@ -126,23 +126,7 @@ let thisPackages = [];
 	};
 	await helper.zip(zipOptions)
 
-	const Digest = 'sha256'; //sha384, sha512
-	const checksum = await helper.getChecksum(zipFilePath, Digest)
-  .then(
-		hash => {
-			const tag = `<${Digest}>${hash}</${Digest}>`;
-			console.log(pc.green(pc.bold(`Checksum tag is: ${tag}`)));
-			return tag;
-		}
-	)
-	.catch(error => {
-		console.log(error);
-		console.log(pc.red(pc.bold(
-			`Error while checksum creation. I won't set one!`)));
-		return '';
-	});
-
-	replaceXmlOptions.checksum = checksum;
+	replaceXmlOptions.checksum = await helper._getChecksum(zipFilePath);
 
 	// Bei diesen werden zuerst Vorlagen nach dist/ kopiert und dort erst "replaced".
 	for (const file of [updateXml, changelogXml, releaseTxt])
